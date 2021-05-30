@@ -1,12 +1,12 @@
 import cx_Oracle
-import xml.dom.minidom
+import xml.etree.ElementTree as ET
 cx_Oracle.init_oracle_client(lib_dir=r"C:\oracle_cx")
 
 
 def Prepare_file():
     text_file = open("file.xml", "w")
     text_file.write("<?xml version=\"1.0\"?>\n")
-    # text_file.write("<apteka>\n")
+    text_file.write("<metadata>\n")
     text_file.close()
 
 
@@ -108,8 +108,50 @@ def Apteka(connection):
 
 def End_file():
     text_file = open("file.xml", "a")
-    text_file.write("</apteka>\n")
+    text_file.write("</metadata>\n")
     text_file.close()
+
+
+def Insert_Adres_klienta(connection):
+    mytree = ET.parse('file.xml')
+    myroot = mytree.getroot()
+    print(myroot[0].tag)
+    h = []
+    for x in myroot[0]:
+        h.append(x.text)
+    for i in range(len(h)):
+        print(h[i])
+    length = len(h) / 5
+    convert = int(length)
+    print(convert)
+    g = 0
+    for j in range(convert):
+        cursor = connection.cursor()
+        cursor.execute(
+            "insert into Adres_klienta values(" + h[g] + ",\'" + h[g + 1] + "\',\'" + h[g + 2] + "\',\'" + h[
+                g + 3] + "\',\'" + h[g + 4] + "\')")
+        connection.commit()
+        g += 5
+
+
+def Insert_Apteka(connection):
+    mytree = ET.parse('file.xml')
+    myroot = mytree.getroot()
+    print(myroot[1].tag)
+    h = []
+    for x in myroot[1]:
+        h.append(x.text)
+    for i in range(len(h)):
+        print(h[i])
+    length = len(h) / 5
+    convert = int(length)
+    print(convert)
+    g = 0
+    for j in range(convert):
+        cursor = connection.cursor()
+        cursor.execute("insert into Apteka values("+h[g]+",\'"+h[g+1]+"\',\'"+h[g+2]+"\',\'"+h[g+3]+"\',\'"+h[g+4]+"\')")
+        connection.commit()
+        g += 5
 
 
 ip = '217.173.198.135'
@@ -118,8 +160,10 @@ SID = 'orcltp'
 dsn_tns = cx_Oracle.makedsn(ip, port, SID)
 connection = cx_Oracle.connect('s97628', 'lukluk12', dsn_tns)
 
-Prepare_file()
-Adres_klienta(connection)
-Apteka(connection)
+# Prepare_file()
+# Adres_klienta(connection)
+# Apteka(connection)
 # End_file()
 
+Insert_Adres_klienta(connection)
+Insert_Apteka(connection)
