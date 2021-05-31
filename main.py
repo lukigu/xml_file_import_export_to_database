@@ -320,7 +320,7 @@ def Laboratorium(connection):
         cursor.execute(id)
         result = cursor.fetchone()[0]
         result = str(result)
-        text_file.write("<id_czas_w_laboratorium_w_godz>" + result + "</czas_w_laboratorium_w_godz>\n")
+        text_file.write("<czas_w_laboratorium_w_godz>" + result + "</czas_w_laboratorium_w_godz>\n")
 
         id = "select godzina_rozpoczecia from Laboratorium where id_laboratorium = " + convert
         cursor.execute(id)
@@ -744,30 +744,160 @@ def Insert_Pracownicy(connection):
         g += columns
 
 
+def Insert_Laboratorium(connection):
+    mytree = ET.parse('file.xml')
+    myroot = mytree.getroot()
+    print(myroot[6].tag)
+    h = []
+    for x in myroot[6]:
+        h.append(x.text)
+    for i in range(len(h)):
+        print(h[i])
+    columns = 6
+    length = len(h) / columns
+    convert = int(length)
+    g = 0
+    for j in range(convert):
+        cursor = connection.cursor()
+        cursor.execute("insert into Laboratorium values("+h[g]+",to_date(\'"+h[g+1]+"\',\'RRRR-MM-DD\'),\'"+h[g+2]+"\',\'"+h[g+3]+"\',\'"+h[g+4]+"\',\'"+h[g+5]+"\')")
+        connection.commit()
+        g += columns
+
+
+def Insert_Klienci(connection):
+    mytree = ET.parse('file.xml')
+    myroot = mytree.getroot()
+    print(myroot[7].tag)
+    h = []
+    for x in myroot[7]:
+        h.append(x.text)
+    for i in range(len(h)):
+        print(h[i])
+    columns = 6
+    length = len(h) / columns
+    convert = int(length)
+    g = 0
+    for j in range(convert):
+        cursor = connection.cursor()
+        cursor.execute("insert into Klienci values("+h[g]+",\'"+h[g+1]+"\',\'"+h[g+2]+"\',\'"+h[g+3]+"\',\'"+h[g+4]+"\',\'"+h[g+5]+"\')")
+        connection.commit()
+        g += columns
+
+
+def Insert_Leki(connection):
+    mytree = ET.parse('file.xml')
+    myroot = mytree.getroot()
+    print(myroot[8].tag)
+    h = []
+    for x in myroot[8]:
+        h.append(x.text)
+    for i in range(len(h)):
+        print(h[i])
+    columns = 6
+    length = len(h) / columns
+    convert = int(length)
+    g = 0
+    for j in range(convert):
+        cursor = connection.cursor()
+        cursor.execute("insert into Leki values("+h[g]+",\'"+h[g+1]+"\',\'"+h[g+2]+"\',\'"+h[g+3]+"\',\'"+h[g+4]+"\',\'"+h[g+5]+"\')")
+        connection.commit()
+        g += columns
+
+
+def Insert_Partia_leku(connection):
+    mytree = ET.parse('file.xml')
+    myroot = mytree.getroot()
+    print(myroot[9].tag)
+    h = []
+    for x in myroot[9]:
+        h.append(x.text)
+    for i in range(len(h)):
+        print(h[i])
+    columns = 7
+    length = len(h) / columns
+    convert = int(length)
+    g = 0
+    for j in range(convert):
+        cursor = connection.cursor()
+        cursor.execute("insert into Partia_leku values("+h[g]+",\'"+h[g+1]+"\',to_date(\'"+h[g+2]+"\',\'RRRR-MM-DD\'),\'"+h[g+3]+"\',\'"+h[g+4]+"\',\'"+h[g+5]+"\',\'"+h[g+6]+"\')")
+        connection.commit()
+        g += columns
+
+
+def Insert_Zamowienia(connection):
+    mytree = ET.parse('file.xml')
+    myroot = mytree.getroot()
+    print(myroot[10].tag)
+    h = []
+    for x in myroot[10]:
+        h.append(x.text)
+    for i in range(len(h)):
+        print(h[i])
+    columns = 6
+    length = len(h) / columns
+    convert = int(length)
+    g = 0
+    for j in range(convert):
+        cursor = connection.cursor()
+        cursor.execute("insert into Zamowienia values("+h[g]+",\'"+h[g+1]+"\',to_date(\'"+h[g+2]+"\',\'RRRR-MM-DD\'),\'"+h[g+3]+"\',\'"+h[g+4]+"\',\'"+h[g+5]+"\')")
+        connection.commit()
+        g += columns
+
+
+def Insert_Informacje_o_zamowieniu(connection):
+    mytree = ET.parse('file.xml')
+    myroot = mytree.getroot()
+    print(myroot[11].tag)
+    h = []
+    for x in myroot[11]:
+        h.append(x.text)
+    for i in range(len(h)):
+        print(h[i])
+    columns = 5
+    length = len(h) / columns
+    convert = int(length)
+    g = 0
+    for j in range(convert):
+        cursor = connection.cursor()
+        cursor.execute("insert into Informacje_o_zamowieniu values("+h[g]+",\'"+h[g+1]+"\',\'"+h[g+2]+"\',\'"+h[g+3]+"\',\'"+h[g+4]+"\')")
+        connection.commit()
+        g += columns
+
+
 ip = '217.173.198.135'
 port = 1522
 SID = 'orcltp'
 dsn_tns = cx_Oracle.makedsn(ip, port, SID)
 connection = cx_Oracle.connect('s97628', 'lukluk12', dsn_tns)
 
-# Prepare_file()
-# Adres_klienta(connection)
-# Apteka(connection)
-# Praca_w_laboratorium(connection)
-# Hurtownia(connection)
-# Producenci(connection)
-# Pracownicy(connection)
-# Laboratorium(connection)
-# Klienci(connection)
-# Leki(connection)
-# Partia_leku(connection)
-# Zamowienia(connection)
-# Informacje_o_zamowieniu(connection)
-# End_file()
+print('1 - eksport z bazy 2 - import z pliku do bazy')
+x = int(input())
 
-Insert_Adres_klienta(connection)
-Insert_Apteka(connection)
-Insert_Praca_w_laboratorium(connection)
-Insert_Hurtownia(connection)
-Insert_Producenci(connection)
-Insert_Pracownicy(connection)
+if x == 1:
+    Prepare_file()
+    Adres_klienta(connection)
+    Apteka(connection)
+    Praca_w_laboratorium(connection)
+    Hurtownia(connection)
+    Producenci(connection)
+    Pracownicy(connection)
+    Laboratorium(connection)
+    Klienci(connection)
+    Leki(connection)
+    Partia_leku(connection)
+    Zamowienia(connection)
+    Informacje_o_zamowieniu(connection)
+    End_file()
+elif x == 2:
+    Insert_Adres_klienta(connection)
+    Insert_Apteka(connection)
+    Insert_Praca_w_laboratorium(connection)
+    Insert_Hurtownia(connection)
+    Insert_Producenci(connection)
+    Insert_Pracownicy(connection)
+    Insert_Laboratorium(connection)
+    Insert_Klienci(connection)
+    Insert_Leki(connection)
+    Insert_Partia_leku(connection)
+    Insert_Zamowienia(connection)
+    Insert_Informacje_o_zamowieniu(connection)
